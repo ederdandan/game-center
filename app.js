@@ -318,30 +318,93 @@
     $('#pf-photo-rm').hidden = !draft.p;
   }
 
+  // Recorta o centro em quadrado, reduz para 96×96 e comprime em JPEG até caber em PHOTO_MAX.
+  function squarePhoto(source, w, h, mirror) {
+    try {
+      const s = Math.min(w, h);
+      const c = document.createElement('canvas');
+      c.width = c.height = 96;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, 96, 96);
+      if (mirror) { ctx.translate(96, 0); ctx.scale(-1, 1); } // selfie: salva como a pessoa se viu na prévia
+      ctx.drawImage(source, (w - s) / 2, (h - s) / 2, s, s, 0, 0, 96, 96);
+      for (let q = 0.85; q >= 0.3; q -= 0.1) {
+        const d = c.toDataURL('image/jpeg', q);
+        if (d.length <= PHOTO_MAX && PHOTO_RE.test(d)) return d;
+      }
+    } catch (e) { /* cai no null */ }
+    return null;
+  }
+
   function photoFromFile(file) {
     return new Promise((resolve) => {
       if (!file || !/^image\//.test(file.type)) return resolve(null);
       const url = URL.createObjectURL(file);
       const img = new Image();
-      img.onload = () => {
-        try {
-          const s = Math.min(img.naturalWidth, img.naturalHeight);
-          const c = document.createElement('canvas');
-          c.width = c.height = 96;
-          const ctx = c.getContext('2d');
-          ctx.fillStyle = '#000';
-          ctx.fillRect(0, 0, 96, 96);
-          ctx.drawImage(img, (img.naturalWidth - s) / 2, (img.naturalHeight - s) / 2, s, s, 0, 0, 96, 96);
-          for (let q = 0.85; q >= 0.3; q -= 0.1) {
-            const d = c.toDataURL('image/jpeg', q);
-            if (d.length <= PHOTO_MAX && PHOTO_RE.test(d)) return resolve(d);
-          }
-          resolve(null);
-        } catch (e) { resolve(null); } finally { URL.revokeObjectURL(url); }
-      };
+      img.onload = () => { resolve(squarePhoto(img, img.naturalWidth, img.naturalHeight, false)); URL.revokeObjectURL(url); };
       img.onerror = () => { URL.revokeObjectURL(url); resolve(null); };
       img.src = url;
     });
+  }
+
+  /* ---------------- câmera (prévia ao vivo) ---------------- */
+  const cam = { stream: null, facing: 'user' };
+
+  function stopCamera() {
+    if (cam.stream) cam.stream.getTracks().forEach((t) => { try { t.stop(); } catch (e) { /* ignora */ } });
+    cam.stream = null;
+    const v = $('#pf-video');
+    if (v) v.srcObject = null;
+    $('#pf-cam-panel').hidden = true;
+  }
+
+  // Sem getUserMedia (ou sem permissão): usa a câmera nativa do sistema via <input capture>.
+  function nativeCamera() {
+    stopCamera();
+    $('#pf-photo-cap').click();
+  }
+
+  async function startCamera() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { nativeCamera(); return; }
+    stopCamera();
+    $('#pf-error').textContent = '';
+    try {
+      cam.stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: cam.facing, width: { ideal: 720 }, height: { ideal: 720 } },
+        audio: false,
+      });
+    } catch (e) {
+      cam.stream = null;
+      if (e && (e.name === 'NotAllowedError' || e.name === 'SecurityError')) {
+        $('#pf-error').textContent = 'Câmera bloqueada. Libere a permissão no navegador ou use a Galeria.';
+        return;
+      }
+      nativeCamera();
+      return;
+    }
+    if (!$('#profile-dlg').open) { stopCamera(); return; }
+    const v = $('#pf-video');
+    v.srcObject = cam.stream;
+    v.classList.toggle('mirror', cam.facing === 'user');
+    $('#pf-cam-panel').hidden = false;
+    try { await v.play(); } catch (e) { /* autoplay já cobre */ }
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      $('#pf-cam-flip').hidden = devices.filter((d) => d.kind === 'videoinput').length < 2;
+    } catch (e) { $('#pf-cam-flip').hidden = true; }
+    $('#pf-cam-panel').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+
+  function snapCamera() {
+    const v = $('#pf-video');
+    if (!cam.stream || !v.videoWidth) { $('#pf-error').textContent = 'A câmera ainda está iniciando. Tente de novo.'; return; }
+    const d = squarePhoto(v, v.videoWidth, v.videoHeight, cam.facing === 'user');
+    stopCamera();
+    if (!d) { $('#pf-error').textContent = 'Não consegui capturar a foto. Tente de novo.'; return; }
+    $('#pf-error').textContent = '';
+    draft.p = d;
+    renderDraft();
   }
 
   function saveProfile(ev) {
@@ -450,14 +513,21 @@
     $('#me').addEventListener('click', () => openProfile());
     $('#welcome-btn').addEventListener('click', () => openProfile());
     $('#pf-form').addEventListener('submit', saveProfile);
-    $('#pf-photo').addEventListener('change', async (ev) => {
+    const onPhotoFile = async (ev) => {
       const d = await photoFromFile(ev.target.files && ev.target.files[0]);
       ev.target.value = '';
       if (!d) { $('#pf-error').textContent = 'Não consegui usar essa imagem. Tente outra.'; return; }
       $('#pf-error').textContent = '';
       draft.p = d;
       renderDraft();
-    });
+    };
+    $('#pf-photo').addEventListener('change', onPhotoFile);
+    $('#pf-photo-cap').addEventListener('change', onPhotoFile);
+    $('#pf-cam').addEventListener('click', startCamera);
+    $('#pf-snap').addEventListener('click', snapCamera);
+    $('#pf-cam-cancel').addEventListener('click', stopCamera);
+    $('#pf-cam-flip').addEventListener('click', () => { cam.facing = cam.facing === 'user' ? 'environment' : 'user'; startCamera(); });
+    $('#profile-dlg').addEventListener('close', stopCamera); // nunca deixa a câmera ligada
     $('#pf-photo-rm').addEventListener('click', () => { delete draft.p; renderDraft(); });
     $('#pf-delete').addEventListener('click', (ev) => {
       const b = ev.currentTarget;

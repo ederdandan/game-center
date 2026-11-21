@@ -100,11 +100,24 @@
         <span>Avatar</span>
         <div id="pf-emojis" class="emoji-grid" role="group" aria-label="Escolha um emoji"></div>
         <div class="photo-row">
+          <button id="pf-cam" class="btn btn-sm" type="button">📷 Tirar foto</button>
           <label class="btn btn-sm">
             <input id="pf-photo" type="file" accept="image/*" hidden>
-            📷 Usar foto
+            🖼️ Galeria
           </label>
+          <input id="pf-photo-cap" type="file" accept="image/*" capture="user" hidden>
           <button id="pf-photo-rm" class="btn btn-sm btn-ghost" type="button" hidden>Remover foto</button>
+        </div>
+        <div id="pf-cam-panel" class="cam-panel" hidden>
+          <div class="cam-view">
+            <video id="pf-video" autoplay playsinline muted></video>
+            <span class="cam-frame" aria-hidden="true"></span>
+          </div>
+          <div class="cam-actions">
+            <button id="pf-cam-cancel" class="btn btn-sm btn-ghost" type="button">Cancelar</button>
+            <button id="pf-cam-flip" class="btn btn-sm" type="button" hidden>🔄 Trocar câmera</button>
+            <button id="pf-snap" class="btn btn-sm btn-primary" type="button">Capturar</button>
+          </div>
         </div>
       </div>
       <div class="field">

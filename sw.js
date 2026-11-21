@@ -2,7 +2,7 @@
    - Shell: cache versionado; navegação network-first (atualiza sem ficar preso).
    - games.json: network-first com fallback ao cache (RN-04: jogo novo aparece na hora).
    - Imagens e fontes: stale-while-revalidate. */
-const VERSION = 'gc-v1';
+const VERSION = 'gc-v2';
 const SHELL = `${VERSION}-shell`;
 const RUNTIME = `${VERSION}-runtime`;
 const SHELL_FILES = ['./', 'index.html', 'style.css', 'app.js', 'manifest.webmanifest', 'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png'];
