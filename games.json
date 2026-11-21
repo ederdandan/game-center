@@ -1,0 +1,83 @@
+{
+  "categories": [
+    { "id": "cartas", "label": "Jogos de Cartas" },
+    { "id": "tabuleiro", "label": "Jogos de Tabuleiro" },
+    { "id": "party", "label": "Party & Reflexo" },
+    { "id": "logica", "label": "Lógica & Arcade" }
+  ],
+  "games": [
+    {
+      "name": "Pife de Varanda",
+      "slug": "pife",
+      "category": "cartas",
+      "image": "../pife/icons/icon-512.png",
+      "color": "#5c3317",
+      "desc": "O Pif-Paf brasileiro: solo, duplas, trios ou salas online com amigos.",
+      "online": true
+    },
+    {
+      "name": "Sobrecarga 2X!",
+      "slug": "dobro",
+      "category": "cartas",
+      "image": "../dobro/icons/icon-512.png",
+      "color": "#1e1b4b",
+      "desc": "Cartas de escalada numérica com combos 2X, contra bots ou online.",
+      "online": true
+    },
+    {
+      "name": "Trinca Oculta",
+      "category": "cartas",
+      "image": "../trinca-oculta/icons/icon-512.png",
+      "color": "#0f172a",
+      "desc": "Dedução, memória e ordenação numérica em duelo 1v1 ou dupla 2v2.",
+      "online": true
+    },
+    {
+      "name": "Ludo Supreme",
+      "slug": "ludo",
+      "category": "tabuleiro",
+      "image": "../ludo/icons/icon-512.png",
+      "color": "#0f172a",
+      "desc": "O Ludo clássico: contra robôs, no mesmo aparelho ou em salas online.",
+      "online": true
+    },
+    {
+      "name": "Olho Vivo",
+      "category": "party",
+      "desc": "Reflexo e percepção visual: ache o par antes de todo mundo.",
+      "online": true
+    },
+    {
+      "name": "TACO! GATO! CHAOS!",
+      "slug": "taco-chaos",
+      "category": "party",
+      "image": "../taco-chaos/icon.svg",
+      "color": "#0F111A",
+      "desc": "Party de reflexo para 2 a 6: bata na pilha na hora certa.",
+      "online": true
+    },
+    {
+      "name": "Murdoku",
+      "category": "logica",
+      "image": "../murdoku/icons/icon-512.png",
+      "color": "#1e1b18",
+      "desc": "Dossiê confidencial: posicione os suspeitos e descubra o culpado."
+    },
+    {
+      "name": "Serpente Arena",
+      "slug": "snake",
+      "category": "logica",
+      "image": "../snake/icons/icon-512.png",
+      "color": "#060918",
+      "desc": "Mundo infinito sem bordas, 7 temas, itens especiais e bots até o Insano.",
+      "online": true
+    },
+    {
+      "name": "Adivinha o que é",
+      "slug": "adivinha",
+      "category": "logica",
+      "desc": "Perguntas de sim ou não até alguém acertar o que é.",
+      "online": true
+    }
+  ]
+}

@@ -192,7 +192,7 @@ game-center/
 
 ## 6. Roadmap de Evolução (Próximos Passos)
 
-1. **Fase 1 — Entrega dos Arquivos Base de Produção:** Gerar `index.html`, `style.css`, `app.js`, `games.json`, `manifest.webmanifest` e `sw.js` finais para publicação em `https://ederdandan.github.io/game-center/`.
+1. **Fase 1 — Entrega dos Arquivos Base de Produção:** ✅ Entregue com 3 modelos visuais para validação (1 · Arcade Lounge, 2 · Vitrine, 3 · Mesa de Jogos), trocáveis pelo seletor flutuante ou por `?modelo=N`. Depois da escolha, remover o seletor e o CSS dos modelos descartados. Ícones gerados por `tools/gen-icons.mjs`. A cada mudança no shell, subir `VERSION` em `sw.js`. Arquivos: `index.html`, `style.css`, `app.js`, `games.json`, `manifest.webmanifest` e `sw.js` finais para publicação em `https://ederdandan.github.io/game-center/`.
 2. **Fase 2 — Integração nos Repositórios dos Jogos:** ✅ Ponte SSO (5.4) injetada na branch `game-center-sso` dos 9 jogos existentes; faltam o teste manual no navegador e o merge na `main` (`adivinha`, `dobro`, `ludo`, `murdoku`, `olho-vivo`, `pife`, `snake`, `taco-chaos`, `trinca-oculta`).
 3. **Fase 3 — Assets Visuais:** Adicionar screenshots/capas reais na pasta `game-center/covers/` e ícones PWA (`icon-192.png` e `icon-512.png`).
 4. **Fase 4 — Melhorias Futuras (Opcional):**

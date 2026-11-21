@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Game Center</title>
+  <meta name="description" content="Todos os jogos em um só lugar. Crie seu perfil uma vez e entre em qualquer jogo.">
+  <meta name="theme-color" content="#0F1117">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Game Center">
+  <script>
+    // Aplica o modelo visual antes da pintura (evita piscar).
+    try {
+      var m = new URLSearchParams(location.search).get('modelo') || localStorage.getItem('gc_model');
+      document.documentElement.dataset.model = /^[123]$/.test(m) ? m : '1';
+    } catch (e) { document.documentElement.dataset.model = '1'; }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Nunito:wght@600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="logo" href="./" aria-label="Game Center — início">
+      <svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true">
+        <rect width="32" height="32" rx="9" fill="var(--logo-bg)"/>
+        <circle cx="16" cy="16" r="9.5" fill="none" stroke="var(--accent)" stroke-width="2.4"/>
+        <path d="M13.6 11.6 21 16l-7.4 4.4z" fill="var(--logo-play)"/>
+      </svg>
+      <span class="logo-text">Game Center</span>
+    </a>
+    <label class="search">
+      <span class="sr-only">Buscar jogo</span>
+      <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="search" type="search" placeholder="Buscar jogo…" autocomplete="off" enterkeyhint="search">
+      <kbd class="search-kbd" aria-hidden="true">/</kbd>
+    </label>
+    <button id="me" class="me" type="button"></button>
+  </header>
+
+  <nav id="chips" class="chips" aria-label="Categorias"></nav>
+
+  <main id="main">
+    <section id="hero" class="hero" hidden></section>
+    <section id="welcome" class="welcome" hidden>
+      <div class="welcome-text">
+        <strong>Um perfil para todos os jogos</strong>
+        <span>Escolha apelido e avatar uma vez. Leva uns 15 segundos.</span>
+      </div>
+      <button id="welcome-btn" class="btn btn-primary" type="button">Criar perfil</button>
+    </section>
+    <section id="recent" class="recent" hidden>
+      <h2 class="sec-title"><span>Continuar jogando</span></h2>
+      <div id="recent-row" class="recent-row"></div>
+    </section>
+    <div id="catalog" class="catalog" aria-live="polite"></div>
+    <p id="empty" class="empty" hidden>Nenhum jogo encontrado. Tente outro nome.</p>
+    <div id="error" class="empty" hidden>
+      <p>Não consegui carregar a lista de jogos.</p>
+      <button id="retry" class="btn" type="button">Tentar de novo</button>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <button id="add-open" class="link" type="button">+ Adicionar jogo</button>
+    <span aria-hidden="true">·</span>
+    <span>Feito por EderDandan</span>
+  </footer>
+
+  <div class="model-switch" role="group" aria-label="Modelo visual">
+    <span class="model-label">Modelo</span>
+    <button type="button" data-model="1">1 · Arcade</button>
+    <button type="button" data-model="2">2 · Vitrine</button>
+    <button type="button" data-model="3">3 · Mesa</button>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- Perfil -->
+  <dialog id="profile-dlg" class="dlg" aria-labelledby="pf-title">
+    <form id="pf-form" method="dialog" novalidate>
+      <div class="dlg-head">
+        <div id="pf-avatar" class="avatar avatar-xl"></div>
+        <div>
+          <h2 id="pf-title">Seu perfil</h2>
+          <p class="sub">Vale em todos os jogos abertos pelo Game Center.</p>
+        </div>
+      </div>
+      <label class="field">
+        <span>Apelido <small>(2 a 12 caracteres)</small></span>
+        <input id="pf-name" type="text" maxlength="12" autocomplete="nickname" placeholder="Ex.: Raposa" required>
+      </label>
+      <div class="field">
+        <span>Avatar</span>
+        <div id="pf-emojis" class="emoji-grid" role="group" aria-label="Escolha um emoji"></div>
+        <div class="photo-row">
+          <label class="btn btn-sm">
+            <input id="pf-photo" type="file" accept="image/*" hidden>
+            📷 Usar foto
+          </label>
+          <button id="pf-photo-rm" class="btn btn-sm btn-ghost" type="button" hidden>Remover foto</button>
+        </div>
+      </div>
+      <div class="field">
+        <span>Cor de destaque</span>
+        <div id="pf-colors" class="swatches" role="group" aria-label="Escolha uma cor"></div>
+      </div>
+      <p id="pf-error" class="error" role="alert"></p>
+      <div class="dlg-actions">
+        <button id="pf-delete" class="btn btn-ghost btn-danger" type="button" hidden>Remover perfil</button>
+        <span class="spacer"></span>
+        <button class="btn" type="button" data-close>Cancelar</button>
+        <button class="btn btn-primary" type="submit">Salvar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Jogar sem perfil? -->
+  <dialog id="play-dlg" class="dlg dlg-sm" aria-labelledby="pl-title">
+    <form method="dialog">
+      <h2 id="pl-title">Jogar</h2>
+      <p class="sub">Crie seu perfil uma vez e entre em todos os jogos já com apelido e avatar.</p>
+      <div class="dlg-actions dlg-actions-stack">
+        <button id="pl-create" class="btn btn-primary" type="button">Criar perfil e jogar</button>
+        <button id="pl-guest" class="btn" type="button">Jogar sem perfil</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Assistente: adicionar jogo -->
+  <dialog id="add-dlg" class="dlg dlg-wide" aria-labelledby="ag-title">
+    <form method="dialog" novalidate>
+      <h2 id="ag-title">Adicionar jogo</h2>
+      <p class="sub">Preencha, confira a prévia e cole o JSON em <code>games.json</code>.</p>
+      <div class="add-grid">
+        <div class="add-fields">
+          <label class="field"><span>Nome *</span><input id="ag-name" type="text" maxlength="60" placeholder="Ex.: Batalha Naval"></label>
+          <label class="field"><span>Link ou slug</span><input id="ag-link" type="text" placeholder="batalha-naval ou https://…"></label>
+          <label class="field"><span>Categoria</span><select id="ag-cat"></select></label>
+          <label class="field"><span>URL da imagem</span><input id="ag-img" type="text" placeholder="../batalha-naval/icons/icon-512.png"></label>
+          <label class="field"><span>Descrição curta</span><input id="ag-desc" type="text" maxlength="160"></label>
+          <label class="check"><input id="ag-online" type="checkbox"> Tem modo online</label>
+        </div>
+        <div class="add-out">
+          <div id="ag-preview" class="add-preview"></div>
+          <textarea id="ag-json" class="code" rows="8" readonly aria-label="JSON gerado"></textarea>
+        </div>
+      </div>
+      <div class="dlg-actions">
+        <span class="spacer"></span>
+        <button class="btn" type="button" data-close>Fechar</button>
+        <button id="ag-copy" class="btn btn-primary" type="button">Copiar JSON</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
