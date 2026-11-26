@@ -3,7 +3,8 @@
     { "id": "cartas", "label": "Jogos de Cartas" },
     { "id": "tabuleiro", "label": "Jogos de Tabuleiro" },
     { "id": "party", "label": "Party & Reflexo" },
-    { "id": "logica", "label": "Lógica & Arcade" }
+    { "id": "logica", "label": "Lógica & Arcade" },
+    { "id": "palavras", "label": "Palavras" }
   ],
   "games": [
     {
@@ -30,6 +31,14 @@
       "image": "../trinca-oculta/icons/icon-512.png",
       "color": "#0f172a",
       "desc": "Dedução, memória e ordenação numérica em duelo 1v1 ou dupla 2v2.",
+      "online": true
+    },
+    {
+      "name": "Fuga da Cela",
+      "slug": "bandit",
+      "category": "cartas",
+      "color": "#78350F",
+      "desc": "Cartas de fuga e contenção: contra bot, no mesmo aparelho ou em sala online.",
       "online": true
     },
     {
@@ -78,6 +87,58 @@
       "category": "logica",
       "desc": "Perguntas de sim ou não até alguém acertar o que é.",
       "online": true
+    },
+    {
+      "name": "Labirinto Sombrio: Eclipse",
+      "slug": "pacman",
+      "category": "logica",
+      "image": "../pacman/icon.svg",
+      "color": "#0B101B",
+      "desc": "Arcade de labirinto assimétrico em tela cheia, com gestos e multiplayer.",
+      "online": true
+    },
+    {
+      "name": "Dossiê Noir",
+      "slug": "murdle",
+      "category": "logica",
+      "color": "#7f1d1d",
+      "desc": "Detetive dedutivo: cruze as pistas e resolva 90 casos."
+    },
+    {
+      "name": "Monólito",
+      "slug": "hitori",
+      "category": "logica",
+      "color": "#1C2026",
+      "desc": "Hitori: escureça casas até não sobrar número repetido."
+    },
+    {
+      "name": "Ábaco Zen",
+      "slug": "kakuro",
+      "category": "logica",
+      "color": "#14110f",
+      "desc": "Kakuro: somas cruzadas com notas automáticas e dicas."
+    },
+    {
+      "name": "Soroban Mestre",
+      "slug": "soroban",
+      "category": "logica",
+      "color": "#5b3a1e",
+      "desc": "Desafios de cálculo no ábaco japonês, com tutorial passo a passo."
+    },
+    {
+      "name": "Almanaque & Letra",
+      "slug": "palavra-cruzada",
+      "category": "palavras",
+      "image": "../palavra-cruzada/favicon.svg",
+      "color": "#2b4c3f",
+      "desc": "Caça-palavras e palavras cruzadas em português."
+    },
+    {
+      "name": "Verbum",
+      "slug": "wordle-catholic",
+      "category": "palavras",
+      "color": "#6b2d1a",
+      "desc": "Descubra a palavra do Catecismo em 6 tentativas."
     }
   ]
 }

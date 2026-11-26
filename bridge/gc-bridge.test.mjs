@@ -53,6 +53,14 @@ const EXISTING = {
   murdoku: { murdoku_v2: { profile: { name: 'Inspetor', icon: '🎩', photo: null, createdAt: 5 }, solved: { a: 1 }, theme: 'noir' } },
   'trinca-oculta': { 'trinca-oculta.profiles.v1': { activeId: 'p1', profiles: [{ id: 'p1', name: 'Trinqueiro', avatar: { type: 'emoji', value: '🙂' }, stats: { played: 4, wins: 2, losses: 2, draws: 0 }, createdAt: 1 }] } },
   'olho-vivo': {},
+  bandit: { fuga_cela_profile_v1: { name: 'Capitão', avatar: '<svg viewBox="0 0 64 64"></svg>' } },
+  hitori: { monolito_hitori_profile_v1: { name: 'Explorador', avatar: 'data:image/jpeg;base64,BBBB' } },
+  murdle: { dossie_noir_profile_v2: { name: 'Inspetor', avatar: '<svg viewBox="0 0 64 64"></svg>' } },
+  soroban: { soroban_mestre_profile_v1: { name: 'Mestre', avatar: '<svg viewBox="0 0 64 64"></svg>' } },
+  kakuro: { abaco_zen_kakuro_v1: { onboarded: true, profile: { name: 'Zen', avatarType: 'svg', avatarVal: 'zen2' }, coins: 333, streak: 4, theme: 'sumi', unlocks: { vipAvatars: true } } },
+  pacman: { eclipse_maze_profile_v1: { nickname: 'Vulto', avatar: 'data:image/jpeg;base64,CCCC' } },
+  'palavra-cruzada': { almanaque_letra_pwa_v2: { profile: { name: 'Leitor', icon: '📚', photo: null }, coins: 77, completed: { ws_1: true }, theme: 'moleskine', shop: { goldFrame: true } } },
+  'wordle-catholic': { verbum_catolico_ux_v4: { profile: { name: 'Peregrino', avatar: { type: 'icon', value: 'pomba' } }, coins: 50, stats: { played: 9, won: 6, streak: 2, maxStreak: 3 } } },
 };
 const ser = o => Object.fromEntries(Object.entries(o).map(([k, v]) => [k, JSON.stringify(v)]));
 
@@ -158,7 +166,8 @@ test('murdoku: só muda o profile, preserva progresso; respeita migração legad
   assert.deepEqual(a.solved, { a: 1 }); assert.equal(a.theme, 'noir');
   assert.equal(a.profile.name, 'Eder'); assert.equal(a.profile.icon, '🦊');
   const keep = get(fromHub('murdoku', { ...HUB, e: '🎮' }), 'murdoku_v2');
-  assert.equal(keep.profile.icon, '🎩'); // emoji fora da lista: mantém o ícone do jogo assert.equal(a.profile.createdAt, 5);
+  assert.equal(keep.profile.icon, '🎩'); // emoji fora da lista: mantém o ícone do jogo
+  assert.equal(a.profile.createdAt, 5);
   const legacy = { murdoku_pwa_v1: JSON.stringify({ profile: { name: 'Velho' } }), [HUB_KEY]: JSON.stringify(HUB) };
   assert.equal(run('murdoku', { storage: legacy }).store.murdoku_v2, undefined);
 });
@@ -170,4 +179,49 @@ test('trinca-oculta: reaproveita perfil de mesmo nome, senão cria gc-hub ativo'
   assert.equal(b.profiles.length, 1); assert.equal(b.activeId, 'p1'); assert.equal(b.profiles[0].stats.wins, 2);
   const c = get(seed('trinca-oculta'), 'trinca-oculta.profiles.v1');
   assert.equal(c.profiles.length, 1); assert.equal(c.activeId, 'gc-hub');
+});
+
+const isEmojiImg = (v, e = '🦊') => typeof v === 'string' && v.startsWith('data:image/svg+xml,') && decodeURIComponent(v).includes(e);
+
+test('bandit / hitori / murdle / soroban: { name, avatar } com emoji em SVG ou foto', () => {
+  for (const [game, k] of [['bandit', 'fuga_cela_profile_v1'], ['hitori', 'monolito_hitori_profile_v1'], ['murdle', 'dossie_noir_profile_v2'], ['soroban', 'soroban_mestre_profile_v1']]) {
+    const a = get(fromHub(game), k);
+    assert.equal(a.name, 'Eder'); assert.ok(isEmojiImg(a.avatar), game);
+    assert.equal(get(seed(game, { ...HUB, p: PHOTO }), k).avatar, PHOTO);
+  }
+});
+
+test('kakuro: preserva moedas/tema/desbloqueios; semeia onboarded', () => {
+  const a = get(fromHub('kakuro'), 'abaco_zen_kakuro_v1');
+  assert.equal(a.coins, 333); assert.equal(a.theme, 'sumi'); assert.deepEqual(a.unlocks, { vipAvatars: true });
+  assert.equal(a.profile.name, 'Eder'); assert.equal(a.profile.avatarType, 'image'); assert.ok(isEmojiImg(a.profile.avatarVal));
+  const b = get(seed('kakuro', { ...HUB, p: PHOTO }), 'abaco_zen_kakuro_v1');
+  assert.equal(b.onboarded, true); assert.equal(b.profile.avatarVal, PHOTO);
+});
+
+test('kakuro: estado não concluído (onboarded false) recebe o perfil no acesso direto', () => {
+  const storage = { abaco_zen_kakuro_v1: JSON.stringify({ onboarded: false, profile: { name: 'Mestre Zen' }, coins: 120 }), [HUB_KEY]: JSON.stringify(HUB) };
+  const p = get(run('kakuro', { storage }), 'abaco_zen_kakuro_v1');
+  assert.equal(p.profile.name, 'Eder'); assert.equal(p.coins, 120); assert.equal(p.onboarded, true);
+});
+
+test('pacman: nickname + avatar sempre imagem', () => {
+  const a = get(fromHub('pacman'), 'eclipse_maze_profile_v1');
+  assert.equal(a.nickname, 'Eder'); assert.ok(isEmojiImg(a.avatar));
+  assert.equal(get(seed('pacman', { ...HUB, p: PHOTO }), 'eclipse_maze_profile_v1').avatar, PHOTO);
+});
+
+test('palavra-cruzada: preserva moedas/progresso/loja; emoji direto no icon', () => {
+  const a = get(fromHub('palavra-cruzada'), 'almanaque_letra_pwa_v2');
+  assert.equal(a.coins, 77); assert.deepEqual(a.completed, { ws_1: true }); assert.deepEqual(a.shop, { goldFrame: true });
+  assert.deepEqual(a.profile, { name: 'Eder', icon: '🦊', photo: null });
+  const b = get(seed('palavra-cruzada', { ...HUB, p: PHOTO }), 'almanaque_letra_pwa_v2');
+  assert.equal(b.profile.photo, PHOTO);
+});
+
+test('wordle-catholic: preserva stats; avatar vira { type: image }', () => {
+  const a = get(fromHub('wordle-catholic'), 'verbum_catolico_ux_v4');
+  assert.deepEqual(a.stats, { played: 9, won: 6, streak: 2, maxStreak: 3 }); assert.equal(a.coins, 50);
+  assert.equal(a.profile.name, 'Eder'); assert.equal(a.profile.avatar.type, 'image'); assert.ok(isEmojiImg(a.profile.avatar.value));
+  assert.deepEqual(get(seed('wordle-catholic', { ...HUB, p: PHOTO }), 'verbum_catolico_ux_v4').profile.avatar, { type: 'image', value: PHOTO });
 });

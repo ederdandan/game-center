@@ -187,13 +187,21 @@ game-center/
 | snake | `serpente_arena_profile_v1` | Lista fechada de 12 emojis. |
 | taco-chaos | `taco_chaos_user` | Cria `userId` se faltar; marca `loggedIn: true`. |
 | trinca-oculta | `trinca-oculta.profiles.v1` | Multi-perfil: reaproveita o de mesmo nome ou cria/atualiza `gc-hub` e o ativa. |
+| bandit | `fuga_cela_profile_v1` | `{ name, avatar }`; emoji do hub vira imagem SVG (`data:image/svg+xml`). |
+| hitori | `monolito_hitori_profile_v1` | Igual ao bandit. |
+| kakuro | `abaco_zen_kakuro_v1` (`.profile`) | Estado único: grava só `profile` e `onboarded: true`; o jogo completa o resto com os padrões. |
+| murdle | `dossie_noir_profile_v2` | Igual ao bandit. |
+| pacman | `eclipse_maze_profile_v1` | `{ nickname, avatar }`; avatar sempre URL de imagem. |
+| palavra-cruzada | `almanaque_letra_pwa_v2` (`.profile`) | Estado único: emoji direto em `icon`, foto em `photo`; o jogo completa o resto com os padrões. |
+| soroban | `soroban_mestre_profile_v1` | Igual ao bandit. |
+| wordle-catholic | `verbum_catolico_ux_v4` (`.profile`) | Avatar `{ type: 'image', value }` (foto ou emoji em SVG). |
 
 ---
 
 ## 6. Roadmap de Evolução (Próximos Passos)
 
 1. **Fase 1 — Entrega dos Arquivos Base de Produção:** ✅ Entregue com 3 modelos visuais para validação (1 · Arcade Lounge, 2 · Vitrine, 3 · Mesa de Jogos), trocáveis pelo seletor flutuante ou por `?modelo=N`. Depois da escolha, remover o seletor e o CSS dos modelos descartados. Ícones gerados por `tools/gen-icons.mjs`. A cada mudança no shell, subir `VERSION` em `sw.js`. Arquivos: `index.html`, `style.css`, `app.js`, `games.json`, `manifest.webmanifest` e `sw.js` finais para publicação em `https://ederdandan.github.io/game-center/`.
-2. **Fase 2 — Integração nos Repositórios dos Jogos:** ✅ Ponte SSO (5.4) injetada na branch `game-center-sso` dos 9 jogos existentes; faltam o teste manual no navegador e o merge na `main` (`adivinha`, `dobro`, `ludo`, `murdoku`, `olho-vivo`, `pife`, `snake`, `taco-chaos`, `trinca-oculta`).
+2. **Fase 2 — Integração nos Repositórios dos Jogos:** ✅ Ponte SSO (5.4) na `main` dos 9 jogos originais (`adivinha`, `dobro`, `ludo`, `murdoku`, `olho-vivo`, `pife`, `snake`, `taco-chaos`, `trinca-oculta`). Lote 2 na branch `game-center-sso`: `bandit`, `hitori`, `kakuro`, `murdle`, `pacman`, `palavra-cruzada`, `soroban`, `wordle-catholic`.
 3. **Fase 3 — Assets Visuais:** Adicionar screenshots/capas reais na pasta `game-center/covers/` e ícones PWA (`icon-192.png` e `icon-512.png`).
 4. **Fase 4 — Melhorias Futuras (Opcional):**
    * Botão *"Voltar ao Game Center"* discreto dentro de cada jogo.
