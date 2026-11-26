@@ -151,6 +151,14 @@
       "desc": "120 fases de lógica de programação visual em ilhas flutuantes."
     },
     {
+      "name": "ENIGMA.IO: Arquivo Oculto",
+      "slug": "enigma",
+      "category": "logica",
+      "image": "../enigma/icons/icon-512.png",
+      "color": "#060b14",
+      "desc": "90 enigmas investigativos com ferramentas forenses."
+    },
+    {
       "name": "Almanaque & Letra",
       "slug": "palavra-cruzada",
       "category": "palavras",

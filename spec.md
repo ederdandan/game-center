@@ -186,6 +186,7 @@ game-center/
 | olho-vivo | — | Sem perfil: a ponte só limpa o hash e expõe `GC_PLAYER`. |
 | pife | `pife_varanda_profile_v3` | Emoji mapeado para `avatarId`; marca `registered: true`. |
 | runaquest | `runaquest_floating_islands_v1` (`.profile`) | Grava o `profile` completo (`created: true`); emoji direto em `avatarValue`. |
+| enigma | `enigma_io_sha256_v2` (`.profile`) | Igual ao runaquest: grava o `profile` completo (`created: true`); emoji direto em `avatarValue`, foto como `image`. |
 | snake | `serpente_arena_profile_v1` | Lista fechada de 12 emojis. |
 | taco-chaos | `taco_chaos_user` | Cria `userId` se faltar; marca `loggedIn: true`. |
 | trinca-oculta | `trinca-oculta.profiles.v1` | Multi-perfil: reaproveita o de mesmo nome ou cria/atualiza `gc-hub` e o ativa. |
@@ -204,7 +205,7 @@ game-center/
 ## 6. Roadmap de Evolução (Próximos Passos)
 
 1. **Fase 1 — Entrega dos Arquivos Base de Produção:** ✅ Entregue com 3 modelos visuais para validação (1 · Arcade Lounge, 2 · Vitrine, 3 · Mesa de Jogos), trocáveis pelo seletor flutuante ou por `?modelo=N`. Depois da escolha, remover o seletor e o CSS dos modelos descartados. Ícones gerados por `tools/gen-icons.mjs`. A cada mudança no shell, subir `VERSION` em `sw.js`. Arquivos: `index.html`, `style.css`, `app.js`, `games.json`, `manifest.webmanifest` e `sw.js` finais para publicação em `https://ederdandan.github.io/game-center/`.
-2. **Fase 2 — Integração nos Repositórios dos Jogos:** ✅ Ponte SSO (5.4) na `main` dos 9 jogos originais (`adivinha`, `dobro`, `ludo`, `murdoku`, `olho-vivo`, `pife`, `snake`, `taco-chaos`, `trinca-oculta`). Lote 2 mergeado via PR: `bandit`, `hitori`, `kakuro`, `murdle`, `pacman`, `palavra-cruzada`, `soroban`, `wordle-catholic` (na `main`). `truco` direto na `main`. Lote 3 via PR: `git-flow-game`, `runaquest`.
+2. **Fase 2 — Integração nos Repositórios dos Jogos:** ✅ Ponte SSO (5.4) na `main` dos 9 jogos originais (`adivinha`, `dobro`, `ludo`, `murdoku`, `olho-vivo`, `pife`, `snake`, `taco-chaos`, `trinca-oculta`). Lote 2 mergeado via PR: `bandit`, `hitori`, `kakuro`, `murdle`, `pacman`, `palavra-cruzada`, `soroban`, `wordle-catholic` (na `main`). `truco` direto na `main`. Lote 3 via PR: `git-flow-game`, `runaquest`. Lote 4 via PR: `enigma`.
 3. **Fase 3 — Assets Visuais:** Adicionar screenshots/capas reais na pasta `game-center/covers/` e ícones PWA (`icon-192.png` e `icon-512.png`).
 4. **Fase 4 — Melhorias Futuras (Opcional):**
    * Botão *"Voltar ao Game Center"* discreto dentro de cada jogo.

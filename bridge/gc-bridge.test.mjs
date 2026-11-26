@@ -63,6 +63,7 @@ const EXISTING = {
   truco: { truco_raiz_profile_v1: { name: 'Zapeiro', avatarId: 'bull', photoDataUrl: null, theme: 'fazenda', wins: 5, games: 8, muted: true } },
   'git-flow-game': { git_flow_aventura_v1: { created: true, name: 'Dev', picType: 'avatar', picVal: 'git', coins: 40, stars: { 1: 3 }, maxStage: 5 } },
   runaquest: { runaquest_floating_islands_v1: { profile: { created: true, name: 'Runa', avatarType: 'icon', avatarValue: '🐉' }, coins: 900, completedLevels: { 1: 3 }, selectedHero: 'kitsu' } },
+  enigma: { enigma_io_sha256_v2: { profile: { created: true, name: 'Agente X', avatarType: 'icon', avatarValue: '🕵️' }, coins: 260, solvedCases: { 1: true }, purchasedItems: ['lens'], notes: { 1: 'x' }, theme: 'noir' } },
   'wordle-catholic': { verbum_catolico_ux_v4: { profile: { name: 'Peregrino', avatar: { type: 'icon', value: 'pomba' } }, coins: 50, stats: { played: 9, won: 6, streak: 2, maxStreak: 3 } } },
 };
 const ser = o => Object.fromEntries(Object.entries(o).map(([k, v]) => [k, JSON.stringify(v)]));
@@ -251,5 +252,13 @@ test('runaquest: preserva fases/moedas/herói; emoji direto no avatarValue', () 
   assert.equal(a.coins, 900); assert.deepEqual(a.completedLevels, { 1: 3 }); assert.equal(a.selectedHero, 'kitsu');
   assert.deepEqual(a.profile, { created: true, name: 'Eder', avatarType: 'icon', avatarValue: '🦊' });
   const b = get(seed('runaquest', { ...HUB, p: PHOTO }), 'runaquest_floating_islands_v1');
+  assert.deepEqual(b.profile, { created: true, name: 'Eder', avatarType: 'image', avatarValue: PHOTO });
+});
+
+test('enigma: preserva moedas/casos/loja/notas; emoji direto no avatarValue', () => {
+  const a = get(fromHub('enigma'), 'enigma_io_sha256_v2');
+  assert.equal(a.coins, 260); assert.deepEqual(a.solvedCases, { 1: true }); assert.deepEqual(a.purchasedItems, ['lens']); assert.deepEqual(a.notes, { 1: 'x' });
+  assert.deepEqual(a.profile, { created: true, name: 'Eder', avatarType: 'icon', avatarValue: '🦊' });
+  const b = get(seed('enigma', { ...HUB, p: PHOTO }), 'enigma_io_sha256_v2');
   assert.deepEqual(b.profile, { created: true, name: 'Eder', avatarType: 'image', avatarValue: PHOTO });
 });
