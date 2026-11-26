@@ -17,6 +17,15 @@
       "online": true
     },
     {
+      "name": "Truco Raiz & Arena",
+      "slug": "truco",
+      "category": "cartas",
+      "image": "../truco/icon-512.png",
+      "color": "#2b170b",
+      "desc": "Truco Paulista e Mineiro com provocações: solo, duplas, trios ou salas online.",
+      "online": true
+    },
+    {
       "name": "Sobrecarga 2X!",
       "slug": "dobro",
       "category": "cartas",

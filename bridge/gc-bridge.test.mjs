@@ -60,6 +60,7 @@ const EXISTING = {
   kakuro: { abaco_zen_kakuro_v1: { onboarded: true, profile: { name: 'Zen', avatarType: 'svg', avatarVal: 'zen2' }, coins: 333, streak: 4, theme: 'sumi', unlocks: { vipAvatars: true } } },
   pacman: { eclipse_maze_profile_v1: { nickname: 'Vulto', avatar: 'data:image/jpeg;base64,CCCC' } },
   'palavra-cruzada': { almanaque_letra_pwa_v2: { profile: { name: 'Leitor', icon: '📚', photo: null }, coins: 77, completed: { ws_1: true }, theme: 'moleskine', shop: { goldFrame: true } } },
+  truco: { truco_raiz_profile_v1: { name: 'Zapeiro', avatarId: 'bull', photoDataUrl: null, theme: 'fazenda', wins: 5, games: 8, muted: true } },
   'wordle-catholic': { verbum_catolico_ux_v4: { profile: { name: 'Peregrino', avatar: { type: 'icon', value: 'pomba' } }, coins: 50, stats: { played: 9, won: 6, streak: 2, maxStreak: 3 } } },
 };
 const ser = o => Object.fromEntries(Object.entries(o).map(([k, v]) => [k, JSON.stringify(v)]));
@@ -224,4 +225,13 @@ test('wordle-catholic: preserva stats; avatar vira { type: image }', () => {
   assert.deepEqual(a.stats, { played: 9, won: 6, streak: 2, maxStreak: 3 }); assert.equal(a.coins, 50);
   assert.equal(a.profile.name, 'Eder'); assert.equal(a.profile.avatar.type, 'image'); assert.ok(isEmojiImg(a.profile.avatar.value));
   assert.deepEqual(get(seed('wordle-catholic', { ...HUB, p: PHOTO }), 'verbum_catolico_ux_v4').profile.avatar, { type: 'image', value: PHOTO });
+});
+
+test('truco: preserva vitórias/tema/som, mapeia emoji; perfil padrão "Violeiro" é semeado', () => {
+  const a = get(fromHub('truco', { ...HUB, e: '🤠' }), 'truco_raiz_profile_v1');
+  assert.deepEqual(a, { name: 'Eder', avatarId: 'cowboy', photoDataUrl: null, theme: 'fazenda', wins: 5, games: 8, muted: true });
+  assert.equal(get(fromHub('truco'), 'truco_raiz_profile_v1').avatarId, 'bull'); // 🦊 fora da lista: mantém
+  const storage = { truco_raiz_profile_v1: JSON.stringify({ name: 'Violeiro', avatarId: 'cowboy', photoDataUrl: null, theme: 'boteco', wins: 0, games: 0 }), [HUB_KEY]: JSON.stringify({ ...HUB, p: PHOTO }) };
+  const b = get(run('truco', { storage }), 'truco_raiz_profile_v1');
+  assert.equal(b.name, 'Eder'); assert.equal(b.photoDataUrl, PHOTO); assert.equal(b.theme, 'boteco');
 });
