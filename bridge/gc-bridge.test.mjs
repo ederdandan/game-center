@@ -61,6 +61,8 @@ const EXISTING = {
   pacman: { eclipse_maze_profile_v1: { nickname: 'Vulto', avatar: 'data:image/jpeg;base64,CCCC' } },
   'palavra-cruzada': { almanaque_letra_pwa_v2: { profile: { name: 'Leitor', icon: '📚', photo: null }, coins: 77, completed: { ws_1: true }, theme: 'moleskine', shop: { goldFrame: true } } },
   truco: { truco_raiz_profile_v1: { name: 'Zapeiro', avatarId: 'bull', photoDataUrl: null, theme: 'fazenda', wins: 5, games: 8, muted: true } },
+  'git-flow-game': { git_flow_aventura_v1: { created: true, name: 'Dev', picType: 'avatar', picVal: 'git', coins: 40, stars: { 1: 3 }, maxStage: 5 } },
+  runaquest: { runaquest_floating_islands_v1: { profile: { created: true, name: 'Runa', avatarType: 'icon', avatarValue: '🐉' }, coins: 900, completedLevels: { 1: 3 }, selectedHero: 'kitsu' } },
   'wordle-catholic': { verbum_catolico_ux_v4: { profile: { name: 'Peregrino', avatar: { type: 'icon', value: 'pomba' } }, coins: 50, stats: { played: 9, won: 6, streak: 2, maxStreak: 3 } } },
 };
 const ser = o => Object.fromEntries(Object.entries(o).map(([k, v]) => [k, JSON.stringify(v)]));
@@ -234,4 +236,20 @@ test('truco: preserva vitórias/tema/som, mapeia emoji; perfil padrão "Violeiro
   const storage = { truco_raiz_profile_v1: JSON.stringify({ name: 'Violeiro', avatarId: 'cowboy', photoDataUrl: null, theme: 'boteco', wins: 0, games: 0 }), [HUB_KEY]: JSON.stringify({ ...HUB, p: PHOTO }) };
   const b = get(run('truco', { storage }), 'truco_raiz_profile_v1');
   assert.equal(b.name, 'Eder'); assert.equal(b.photoDataUrl, PHOTO); assert.equal(b.theme, 'boteco');
+});
+
+test('git-flow-game: preserva moedas/estrelas/fases; avatar vira imagem; semeia created', () => {
+  const a = get(fromHub('git-flow-game'), 'git_flow_aventura_v1');
+  assert.equal(a.coins, 40); assert.deepEqual(a.stars, { 1: 3 }); assert.equal(a.maxStage, 5);
+  assert.equal(a.name, 'Eder'); assert.equal(a.picType, 'image'); assert.ok(isEmojiImg(a.picVal));
+  const b = get(seed('git-flow-game', { ...HUB, p: PHOTO }), 'git_flow_aventura_v1');
+  assert.equal(b.created, true); assert.equal(b.picVal, PHOTO);
+});
+
+test('runaquest: preserva fases/moedas/herói; emoji direto no avatarValue', () => {
+  const a = get(fromHub('runaquest'), 'runaquest_floating_islands_v1');
+  assert.equal(a.coins, 900); assert.deepEqual(a.completedLevels, { 1: 3 }); assert.equal(a.selectedHero, 'kitsu');
+  assert.deepEqual(a.profile, { created: true, name: 'Eder', avatarType: 'icon', avatarValue: '🦊' });
+  const b = get(seed('runaquest', { ...HUB, p: PHOTO }), 'runaquest_floating_islands_v1');
+  assert.deepEqual(b.profile, { created: true, name: 'Eder', avatarType: 'image', avatarValue: PHOTO });
 });

@@ -135,6 +135,22 @@
       "desc": "Desafios de cálculo no ábaco japonês, com tutorial passo a passo."
     },
     {
+      "name": "Git Flow: Aventura do Código",
+      "slug": "git-flow-game",
+      "category": "logica",
+      "image": "../git-flow-game/icon-512.png",
+      "color": "#0d1117",
+      "desc": "Aprenda Git jogando: 30 fases do git init ao git reflog, sem digitar nada."
+    },
+    {
+      "name": "Runaquest: Código Ancestral",
+      "slug": "runaquest",
+      "category": "logica",
+      "image": "../runaquest/icons/icon-512.png",
+      "color": "#07111a",
+      "desc": "120 fases de lógica de programação visual em ilhas flutuantes."
+    },
+    {
       "name": "Almanaque & Letra",
       "slug": "palavra-cruzada",
       "category": "palavras",
