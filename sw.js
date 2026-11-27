@@ -2,7 +2,7 @@
    - Shell: cache versionado; navegação network-first (atualiza sem ficar preso).
    - games.json: network-first com fallback ao cache (RN-04: jogo novo aparece na hora).
    - Imagens e fontes: stale-while-revalidate. */
-const VERSION = 'gc-v2';
+const VERSION = 'gc-v3';
 const SHELL = `${VERSION}-shell`;
 const RUNTIME = `${VERSION}-runtime`;
 const SHELL_FILES = ['./', 'index.html', 'style.css', 'app.js', 'manifest.webmanifest', 'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png'];
@@ -49,6 +49,8 @@ async function staleWhileRevalidate(req) {
 }
 
 self.addEventListener('fetch', (e) => {
+  // Métricas (GoatCounter): sempre pela rede, nunca no cache.
+  if (/goatcounter\.com|gc\.zgo\.at/.test(e.request.url)) return;
   const req = e.request;
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
