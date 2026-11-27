@@ -64,6 +64,7 @@ const EXISTING = {
   'git-flow-game': { git_flow_aventura_v1: { created: true, name: 'Dev', picType: 'avatar', picVal: 'git', coins: 40, stars: { 1: 3 }, maxStage: 5 } },
   runaquest: { runaquest_floating_islands_v1: { profile: { created: true, name: 'Runa', avatarType: 'icon', avatarValue: '🐉' }, coins: 900, completedLevels: { 1: 3 }, selectedHero: 'kitsu' } },
   enigma: { enigma_io_sha256_v2: { profile: { created: true, name: 'Agente X', avatarType: 'icon', avatarValue: '🕵️' }, coins: 260, solvedCases: { 1: true }, purchasedItems: ['lens'], notes: { 1: 'x' }, theme: 'noir' } },
+  'enigma-rede': { voidbreach_proto_zero_v3: { profile: { created: true, name: 'Ghost', avatarType: 'icon', avatarValue: '👾' }, coins: 480, solvedNodes: { 1: 'p1' }, unlockedHints: { 1: true }, purchasedItems: ['f1'], equippedFrame: 'f1', notes: { 1: 'x' }, theme: 'crimson', sig: 'SIG' } },
   'wordle-catholic': { verbum_catolico_ux_v4: { profile: { name: 'Peregrino', avatar: { type: 'icon', value: 'pomba' } }, coins: 50, stats: { played: 9, won: 6, streak: 2, maxStreak: 3 } } },
 };
 const ser = o => Object.fromEntries(Object.entries(o).map(([k, v]) => [k, JSON.stringify(v)]));
@@ -261,4 +262,18 @@ test('enigma: preserva moedas/casos/loja/notas; emoji direto no avatarValue', ()
   assert.deepEqual(a.profile, { created: true, name: 'Eder', avatarType: 'icon', avatarValue: '🦊' });
   const b = get(seed('enigma', { ...HUB, p: PHOTO }), 'enigma_io_sha256_v2');
   assert.deepEqual(b.profile, { created: true, name: 'Eder', avatarType: 'image', avatarValue: PHOTO });
+});
+
+test('enigma-rede: só troca o profile do v3 (sig intacta); sem v3 semeia pelo legado v2', () => {
+  const a = get(fromHub('enigma-rede'), 'voidbreach_proto_zero_v3');
+  assert.equal(a.coins, 480); assert.equal(a.sig, 'SIG'); assert.deepEqual(a.solvedNodes, { 1: 'p1' }); assert.deepEqual(a.purchasedItems, ['f1']);
+  assert.equal(a.equippedFrame, 'f1'); assert.deepEqual(a.notes, { 1: 'x' }); assert.equal(a.theme, 'crimson');
+  assert.deepEqual(a.profile, { created: true, name: 'Eder', avatarType: 'icon', avatarValue: '🦊' });
+  const b = seed('enigma-rede', { ...HUB, p: PHOTO });
+  assert.equal(b.store.voidbreach_proto_zero_v3, undefined);
+  assert.deepEqual(get(b, 'voidbreach_proto_zero_v2'), { profile: { created: true, name: 'Eder', avatarType: 'image', avatarValue: PHOTO } });
+  const legacy = { voidbreach_proto_zero_v2: JSON.stringify({ profile: { created: true, name: 'Velho', avatarType: 'icon', avatarValue: '👾' }, theme: 'arctic' }), [HUB_KEY]: JSON.stringify(HUB) };
+  assert.equal(run('enigma-rede', { storage: legacy }).store.voidbreach_proto_zero_v2, legacy.voidbreach_proto_zero_v2);
+  const c = get(run('enigma-rede', { url: 'https://ederdandan.github.io/enigma-rede/#gc_profile=' + encode(HUB), storage: legacy }), 'voidbreach_proto_zero_v2');
+  assert.equal(c.theme, 'arctic'); assert.equal(c.profile.name, 'Eder');
 });

@@ -159,6 +159,14 @@
       "desc": "90 enigmas investigativos com ferramentas forenses."
     },
     {
+      "name": "VOIDBREACH // Protocolo Zero",
+      "slug": "enigma-rede",
+      "category": "logica",
+      "image": "../enigma-rede/icons/icon-512.png",
+      "color": "#04080d",
+      "desc": "120 desafios de infiltração web e criptografia em 4 níveis."
+    },
+    {
       "name": "Almanaque & Letra",
       "slug": "palavra-cruzada",
       "category": "palavras",
